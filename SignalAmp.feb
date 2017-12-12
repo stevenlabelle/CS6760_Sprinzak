@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Problem Description:
+        Reaction-diffusion simulation based off the signal amplification model in "Cis-interactions
+        between Notch and Delta generate mutually exclusive signalling states" by Sprinzak et al. 2010
+	in Nature. It contains two 3x3x3 um cells connected by a 1x3x3 um intercellular  space.
+Main Features:
+        Reaction-diffusion
+Secondary Features:
+        3x3x3 hexahedral element meshing for each domain. The production of Delta 1 in this model is
+	20 RFU/hour and the ratio of cis to trans binding is 1/20.
+Species:
+	Delta 1 (D1)
+	Notch 1 (N1)
+	cis-Delta-Notch (D1N1)
+	Notch intracellular domain signal (S)
+	Plate Delta (DP)
+	trans-Delta-Notch (DPN1)
+Reactions/Kinetics:
+	Delta 1 production (->D1)
+	Notch 1 production (->N1)
+	Delta 1 degradation (D1->)
+	Notch 1 degradation (N1->)
+	Notch intracellular domain signal transduction (DPN1->S)
+	Notch intracellular domain signal degradation (S->)
+	Cis binding (D1+N1->D1N1) 
+	Trans binding (DP+N1->DPN1)
+Materials:
+	Reaction-diffusion
+Results:
+        Steps Completed: 41
+	Equilibrium Iterations: 41
+	Right Hand Evaluations: 41
+	Stiffness Reformations: 41
+Comments:
+
+-->
+<febio_spec version="2.5">
+  <Module type="reaction-diffusion"/>
+	<Globals>
+		<Constants>
+			<T>293</T>
+			<R>8.314</R>
+		</Constants>
+		<Solutes>
+		  <solute id="1" name="D1"/>
+		  <solute id="2" name="N1"/>
+		  <solute id="3" name="D1N1"/>
+		  <solute id="4" name="S"/>
+		  <solute id="5" name="DP"/>
+		  <solute id="6" name="DPN1"/>
+		</Solutes>
+	</Globals>
+	<Material>
+	  <material id="1" name="PlateM" type="reaction-diffusion">
+	    <species name="DP">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	  </material>
+	  <material id="2" name="ReceiverM" type="reaction-diffusion">
+	    <species name="D1">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="N1">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="S">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="DPN1">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="D1N1">
+	      <diffusivity>0</diffusivity>
+	    </species>
+	    <reaction name="Signal Transduction1" type="mass action">
+	      <equation>DPN1->S</equation>
+	      <rate_constant>1e10</rate_constant>
+	    </reaction>
+	    <reaction name="D1 Production" type="mass action">
+	      <equation>->D1</equation>
+	      <rate_constant>8.69e-3</rate_constant>
+	    </reaction>
+	    <reaction name="N1 Production" type="mass action">
+	      <equation>->N1</equation>
+	      <rate_constant>8.69e-3</rate_constant>
+	    </reaction>
+	    <reaction name="D1 Deg" type="mass action">
+	      <equation>D1-></equation>
+	      <rate_constant>2.78e-5</rate_constant>
+	    </reaction>
+	    <reaction name="N1 Deg" type="mass action">
+	      <equation>N1-></equation>
+	      <rate_constant>2.78e-5</rate_constant>
+	    </reaction>
+	    <reaction name="S Deg" type="mass action">
+	      <equation>S-></equation>
+	      <rate_constant>2.78e-4</rate_constant>
+	    </reaction>
+	    <reaction name="cis deletion" type="mass action">
+	      <equation>D1N1-></equation>
+	      <rate_constant>1e20</rate_constant>
+	    </reaction>
+	  </material>
+	  <material id="3" name="IntercellularM" type="reaction-diffusion">
+	    <species name="D1">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="N1">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="DPN1">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="DP">
+	      <diffusivity>6.88e-11</diffusivity>
+	    </species>
+	    <species name="D1N1">
+	      <diffusivity>6.88e-11</diffusivity>	      
+	    </species>	    
+	    <reaction name="N1 Cis" type="mass action">
+	      <equation>N1+D1->D1N1</equation>
+	      <rate_constant>1e5</rate_constant>
+	    </reaction>
+	    <reaction name="N1 Trans" type="mass action">
+	      <equation>N1+DP->DPN1</equation>
+	      <rate_constant>1e5</rate_constant>
+	    </reaction>
+	    <reaction name="D1N1 deletion" type="mass action">
+	      <equation>D1N1-></equation>
+	      <rate_constant>1e20</rate_constant>
+	    </reaction>
+	    <reaction name="D1 Deg" type="mass action">
+	      <equation>D1-></equation>
+	      <rate_constant>2.78e-5</rate_constant>
+	    </reaction>
+	    <reaction name="N1 Deg" type="mass action">
+	      <equation>N1-></equation>
+	      <rate_constant>2.78e-5</rate_constant>
+	    </reaction>
+	  </material>
+	</Material>
+	<Geometry>
+		<Nodes name="GeoNodes">
+			<node id="1"> 5.0000000e-007,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="2"> 5.0000000e-007,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="3"> 5.0000000e-007,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="4"> 5.0000000e-007,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="5"> 5.0000000e-007,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="6"> 5.0000000e-007,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="7"> 5.0000000e-007,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="8"> 5.0000000e-007,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="9"> 5.0000000e-007, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="10"> 5.0000000e-007, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="11"> 5.0000000e-007, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="12"> 5.0000000e-007, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="13"> 5.0000000e-007, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="14"> 5.0000000e-007, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="15"> 5.0000000e-007, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="16"> 5.0000000e-007, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="17"> 3.8333333e-006,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="18"> 3.8333333e-006,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="19"> 3.8333333e-006,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="20"> 3.8333333e-006,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="21"> 3.8333333e-006,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="22"> 3.8333333e-006,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="23"> 3.8333333e-006,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="24"> 3.8333333e-006,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="25"> 3.8333333e-006, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="26"> 3.8333333e-006, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="27"> 3.8333333e-006, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="28"> 3.8333333e-006, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="29"> 3.8333333e-006, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="30"> 3.8333333e-006, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="31"> 3.8333333e-006, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="32"> 3.8333333e-006, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="33"> 7.1666667e-006,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="34"> 7.1666667e-006,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="35"> 7.1666667e-006,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="36"> 7.1666667e-006,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="37"> 7.1666667e-006,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="38"> 7.1666667e-006,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="39"> 7.1666667e-006,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="40"> 7.1666667e-006,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="41"> 7.1666667e-006, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="42"> 7.1666667e-006, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="43"> 7.1666667e-006, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="44"> 7.1666667e-006, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="45"> 7.1666667e-006, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="46"> 7.1666667e-006, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="47"> 7.1666667e-006, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="48"> 7.1666667e-006, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="49"> 1.0500000e-005,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="50"> 1.0500000e-005,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="51"> 1.0500000e-005,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="52"> 1.0500000e-005,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="53"> 1.0500000e-005,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="54"> 1.0500000e-005,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="55"> 1.0500000e-005,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="56"> 1.0500000e-005,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="57"> 1.0500000e-005, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="58"> 1.0500000e-005, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="59"> 1.0500000e-005, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="60"> 1.0500000e-005, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="61"> 1.0500000e-005, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="62"> 1.0500000e-005, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="63"> 1.0500000e-005, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="64"> 1.0500000e-005, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="65">-1.0500000e-005,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="66">-1.0500000e-005,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="67">-1.0500000e-005,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="68">-1.0500000e-005,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="69">-1.0500000e-005,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="70">-1.0500000e-005,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="71">-1.0500000e-005,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="72">-1.0500000e-005,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="73">-1.0500000e-005, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="74">-1.0500000e-005, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="75">-1.0500000e-005, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="76">-1.0500000e-005, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="77">-1.0500000e-005, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="78">-1.0500000e-005, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="79">-1.0500000e-005, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="80">-1.0500000e-005, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="81">-7.1666667e-006,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="82">-7.1666667e-006,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="83">-7.1666667e-006,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="84">-7.1666667e-006,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="85">-7.1666667e-006,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="86">-7.1666667e-006,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="87">-7.1666667e-006,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="88">-7.1666667e-006,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="89">-7.1666667e-006, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="90">-7.1666667e-006, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="91">-7.1666667e-006, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="92">-7.1666667e-006, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="93">-7.1666667e-006, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="94">-7.1666667e-006, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="95">-7.1666667e-006, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="96">-7.1666667e-006, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="97">-3.8333333e-006,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="98">-3.8333333e-006,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="99">-3.8333333e-006,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="100">-3.8333333e-006,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="101">-3.8333333e-006,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="102">-3.8333333e-006,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="103">-3.8333333e-006,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="104">-3.8333333e-006,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="105">-3.8333333e-006, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="106">-3.8333333e-006, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="107">-3.8333333e-006, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="108">-3.8333333e-006, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="109">-3.8333333e-006, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="110">-3.8333333e-006, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="111">-3.8333333e-006, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="112">-3.8333333e-006, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="113">-5.0000000e-007,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="114">-5.0000000e-007,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="115">-5.0000000e-007,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="116">-5.0000000e-007,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="117">-5.0000000e-007,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="118">-5.0000000e-007,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="119">-5.0000000e-007,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="120">-5.0000000e-007,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="121">-5.0000000e-007, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="122">-5.0000000e-007, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="123">-5.0000000e-007, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="124">-5.0000000e-007, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="125">-5.0000000e-007, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="126">-5.0000000e-007, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="127">-5.0000000e-007, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="128">-5.0000000e-007, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="129">-1.6666667e-007,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="130">-1.6666667e-007,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="131">-1.6666667e-007,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="132">-1.6666667e-007,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="133">-1.6666667e-007,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="134">-1.6666667e-007,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="135">-1.6666667e-007,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="136">-1.6666667e-007,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="137">-1.6666667e-007, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="138">-1.6666667e-007, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="139">-1.6666667e-007, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="140">-1.6666667e-007, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="141">-1.6666667e-007, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="142">-1.6666667e-007, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="143">-1.6666667e-007, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="144">-1.6666667e-007, 5.0000000e-006, 1.0000000e-005</node>
+			<node id="145"> 1.6666667e-007,-5.0000000e-006, 0.0000000e+000</node>
+			<node id="146"> 1.6666667e-007,-5.0000000e-006, 3.3333333e-006</node>
+			<node id="147"> 1.6666667e-007,-5.0000000e-006, 6.6666667e-006</node>
+			<node id="148"> 1.6666667e-007,-5.0000000e-006, 1.0000000e-005</node>
+			<node id="149"> 1.6666667e-007,-1.6666667e-006, 0.0000000e+000</node>
+			<node id="150"> 1.6666667e-007,-1.6666667e-006, 3.3333333e-006</node>
+			<node id="151"> 1.6666667e-007,-1.6666667e-006, 6.6666667e-006</node>
+			<node id="152"> 1.6666667e-007,-1.6666667e-006, 1.0000000e-005</node>
+			<node id="153"> 1.6666667e-007, 1.6666667e-006, 0.0000000e+000</node>
+			<node id="154"> 1.6666667e-007, 1.6666667e-006, 3.3333333e-006</node>
+			<node id="155"> 1.6666667e-007, 1.6666667e-006, 6.6666667e-006</node>
+			<node id="156"> 1.6666667e-007, 1.6666667e-006, 1.0000000e-005</node>
+			<node id="157"> 1.6666667e-007, 5.0000000e-006, 0.0000000e+000</node>
+			<node id="158"> 1.6666667e-007, 5.0000000e-006, 3.3333333e-006</node>
+			<node id="159"> 1.6666667e-007, 5.0000000e-006, 6.6666667e-006</node>
+			<node id="160"> 1.6666667e-007, 5.0000000e-006, 1.0000000e-005</node>
+		</Nodes>
+		<Elements type="hex8" mat="1" name="Part3">
+			<elem id="1">     1,    17,    21,     5,     2,    18,    22,     6</elem>
+			<elem id="2">     2,    18,    22,     6,     3,    19,    23,     7</elem>
+			<elem id="3">     3,    19,    23,     7,     4,    20,    24,     8</elem>
+			<elem id="4">     5,    21,    25,     9,     6,    22,    26,    10</elem>
+			<elem id="5">     6,    22,    26,    10,     7,    23,    27,    11</elem>
+			<elem id="6">     7,    23,    27,    11,     8,    24,    28,    12</elem>
+			<elem id="7">     9,    25,    29,    13,    10,    26,    30,    14</elem>
+			<elem id="8">    10,    26,    30,    14,    11,    27,    31,    15</elem>
+			<elem id="9">    11,    27,    31,    15,    12,    28,    32,    16</elem>
+			<elem id="10">    17,    33,    37,    21,    18,    34,    38,    22</elem>
+			<elem id="11">    18,    34,    38,    22,    19,    35,    39,    23</elem>
+			<elem id="12">    19,    35,    39,    23,    20,    36,    40,    24</elem>
+			<elem id="13">    21,    37,    41,    25,    22,    38,    42,    26</elem>
+			<elem id="14">    22,    38,    42,    26,    23,    39,    43,    27</elem>
+			<elem id="15">    23,    39,    43,    27,    24,    40,    44,    28</elem>
+			<elem id="16">    25,    41,    45,    29,    26,    42,    46,    30</elem>
+			<elem id="17">    26,    42,    46,    30,    27,    43,    47,    31</elem>
+			<elem id="18">    27,    43,    47,    31,    28,    44,    48,    32</elem>
+			<elem id="19">    33,    49,    53,    37,    34,    50,    54,    38</elem>
+			<elem id="20">    34,    50,    54,    38,    35,    51,    55,    39</elem>
+			<elem id="21">    35,    51,    55,    39,    36,    52,    56,    40</elem>
+			<elem id="22">    37,    53,    57,    41,    38,    54,    58,    42</elem>
+			<elem id="23">    38,    54,    58,    42,    39,    55,    59,    43</elem>
+			<elem id="24">    39,    55,    59,    43,    40,    56,    60,    44</elem>
+			<elem id="25">    41,    57,    61,    45,    42,    58,    62,    46</elem>
+			<elem id="26">    42,    58,    62,    46,    43,    59,    63,    47</elem>
+			<elem id="27">    43,    59,    63,    47,    44,    60,    64,    48</elem>
+		</Elements>
+		<Elements type="hex8" mat="2" name="Part1">
+			<elem id="28">    65,    81,    85,    69,    66,    82,    86,    70</elem>
+			<elem id="29">    66,    82,    86,    70,    67,    83,    87,    71</elem>
+			<elem id="30">    67,    83,    87,    71,    68,    84,    88,    72</elem>
+			<elem id="31">    69,    85,    89,    73,    70,    86,    90,    74</elem>
+			<elem id="32">    70,    86,    90,    74,    71,    87,    91,    75</elem>
+			<elem id="33">    71,    87,    91,    75,    72,    88,    92,    76</elem>
+			<elem id="34">    73,    89,    93,    77,    74,    90,    94,    78</elem>
+			<elem id="35">    74,    90,    94,    78,    75,    91,    95,    79</elem>
+			<elem id="36">    75,    91,    95,    79,    76,    92,    96,    80</elem>
+			<elem id="37">    81,    97,   101,    85,    82,    98,   102,    86</elem>
+			<elem id="38">    82,    98,   102,    86,    83,    99,   103,    87</elem>
+			<elem id="39">    83,    99,   103,    87,    84,   100,   104,    88</elem>
+			<elem id="40">    85,   101,   105,    89,    86,   102,   106,    90</elem>
+			<elem id="41">    86,   102,   106,    90,    87,   103,   107,    91</elem>
+			<elem id="42">    87,   103,   107,    91,    88,   104,   108,    92</elem>
+			<elem id="43">    89,   105,   109,    93,    90,   106,   110,    94</elem>
+			<elem id="44">    90,   106,   110,    94,    91,   107,   111,    95</elem>
+			<elem id="45">    91,   107,   111,    95,    92,   108,   112,    96</elem>
+			<elem id="46">    97,   113,   117,   101,    98,   114,   118,   102</elem>
+			<elem id="47">    98,   114,   118,   102,    99,   115,   119,   103</elem>
+			<elem id="48">    99,   115,   119,   103,   100,   116,   120,   104</elem>
+			<elem id="49">   101,   117,   121,   105,   102,   118,   122,   106</elem>
+			<elem id="50">   102,   118,   122,   106,   103,   119,   123,   107</elem>
+			<elem id="51">   103,   119,   123,   107,   104,   120,   124,   108</elem>
+			<elem id="52">   105,   121,   125,   109,   106,   122,   126,   110</elem>
+			<elem id="53">   106,   122,   126,   110,   107,   123,   127,   111</elem>
+			<elem id="54">   107,   123,   127,   111,   108,   124,   128,   112</elem>
+		</Elements>
+		<Elements type="hex8" mat="3" name="Part4">
+			<elem id="55">   113,   129,   133,   117,   114,   130,   134,   118</elem>
+			<elem id="56">   114,   130,   134,   118,   115,   131,   135,   119</elem>
+			<elem id="57">   115,   131,   135,   119,   116,   132,   136,   120</elem>
+			<elem id="58">   117,   133,   137,   121,   118,   134,   138,   122</elem>
+			<elem id="59">   118,   134,   138,   122,   119,   135,   139,   123</elem>
+			<elem id="60">   119,   135,   139,   123,   120,   136,   140,   124</elem>
+			<elem id="61">   121,   137,   141,   125,   122,   138,   142,   126</elem>
+			<elem id="62">   122,   138,   142,   126,   123,   139,   143,   127</elem>
+			<elem id="63">   123,   139,   143,   127,   124,   140,   144,   128</elem>
+			<elem id="64">   129,   145,   149,   133,   130,   146,   150,   134</elem>
+			<elem id="65">   130,   146,   150,   134,   131,   147,   151,   135</elem>
+			<elem id="66">   131,   147,   151,   135,   132,   148,   152,   136</elem>
+			<elem id="67">   133,   149,   153,   137,   134,   150,   154,   138</elem>
+			<elem id="68">   134,   150,   154,   138,   135,   151,   155,   139</elem>
+			<elem id="69">   135,   151,   155,   139,   136,   152,   156,   140</elem>
+			<elem id="70">   137,   153,   157,   141,   138,   154,   158,   142</elem>
+			<elem id="71">   138,   154,   158,   142,   139,   155,   159,   143</elem>
+			<elem id="72">   139,   155,   159,   143,   140,   156,   160,   144</elem>
+			<elem id="73">   145,     1,     5,   149,   146,     2,     6,   150</elem>
+			<elem id="74">   146,     2,     6,   150,   147,     3,     7,   151</elem>
+			<elem id="75">   147,     3,     7,   151,   148,     4,     8,   152</elem>
+			<elem id="76">   149,     5,     9,   153,   150,     6,    10,   154</elem>
+			<elem id="77">   150,     6,    10,   154,   151,     7,    11,   155</elem>
+			<elem id="78">   151,     7,    11,   155,   152,     8,    12,   156</elem>
+			<elem id="79">   153,     9,    13,   157,   154,    10,    14,   158</elem>
+			<elem id="80">   154,    10,    14,   158,   155,    11,    15,   159</elem>
+			<elem id="81">   155,    11,    15,   159,   156,    12,    16,   160</elem>
+		</Elements>
+		<NodeSet name="ReceiverN">
+			<node id="65"/>
+			<node id="66"/>
+			<node id="67"/>
+			<node id="68"/>
+			<node id="69"/>
+			<node id="70"/>
+			<node id="71"/>
+			<node id="72"/>
+			<node id="73"/>
+			<node id="74"/>
+			<node id="75"/>
+			<node id="76"/>
+			<node id="77"/>
+			<node id="78"/>
+			<node id="79"/>
+			<node id="80"/>
+			<node id="81"/>
+			<node id="82"/>
+			<node id="83"/>
+			<node id="84"/>
+			<node id="85"/>
+			<node id="86"/>
+			<node id="87"/>
+			<node id="88"/>
+			<node id="89"/>
+			<node id="90"/>
+			<node id="91"/>
+			<node id="92"/>
+			<node id="93"/>
+			<node id="94"/>
+			<node id="95"/>
+			<node id="96"/>
+			<node id="97"/>
+			<node id="98"/>
+			<node id="99"/>
+			<node id="100"/>
+			<node id="101"/>
+			<node id="102"/>
+			<node id="103"/>
+			<node id="104"/>
+			<node id="105"/>
+			<node id="106"/>
+			<node id="107"/>
+			<node id="108"/>
+			<node id="109"/>
+			<node id="110"/>
+			<node id="111"/>
+			<node id="112"/>
+			<node id="113"/>
+			<node id="114"/>
+			<node id="115"/>
+			<node id="116"/>
+			<node id="117"/>
+			<node id="118"/>
+			<node id="119"/>
+			<node id="120"/>
+			<node id="121"/>
+			<node id="122"/>
+			<node id="123"/>
+			<node id="124"/>
+			<node id="125"/>
+			<node id="126"/>
+			<node id="127"/>
+			<node id="128"/>
+		</NodeSet>
+		<NodeSet name="Intercellular">
+			<node id="1"/>
+			<node id="2"/>
+			<node id="3"/>
+			<node id="4"/>
+			<node id="5"/>
+			<node id="6"/>
+			<node id="7"/>
+			<node id="8"/>
+			<node id="9"/>
+			<node id="10"/>
+			<node id="11"/>
+			<node id="12"/>
+			<node id="13"/>
+			<node id="14"/>
+			<node id="15"/>
+			<node id="16"/>
+			<node id="113"/>
+			<node id="114"/>
+			<node id="115"/>
+			<node id="116"/>
+			<node id="117"/>
+			<node id="118"/>
+			<node id="119"/>
+			<node id="120"/>
+			<node id="121"/>
+			<node id="122"/>
+			<node id="123"/>
+			<node id="124"/>
+			<node id="125"/>
+			<node id="126"/>
+			<node id="127"/>
+			<node id="128"/>
+			<node id="129"/>
+			<node id="130"/>
+			<node id="131"/>
+			<node id="132"/>
+			<node id="133"/>
+			<node id="134"/>
+			<node id="135"/>
+			<node id="136"/>
+			<node id="137"/>
+			<node id="138"/>
+			<node id="139"/>
+			<node id="140"/>
+			<node id="141"/>
+			<node id="142"/>
+			<node id="143"/>
+			<node id="144"/>
+			<node id="145"/>
+			<node id="146"/>
+			<node id="147"/>
+			<node id="148"/>
+			<node id="149"/>
+			<node id="150"/>
+			<node id="151"/>
+			<node id="152"/>
+			<node id="153"/>
+			<node id="154"/>
+			<node id="155"/>
+			<node id="156"/>
+			<node id="157"/>
+			<node id="158"/>
+			<node id="159"/>
+			<node id="160"/>
+		</NodeSet>
+		<NodeSet name="PlateN">
+			<node id="1"/>
+			<node id="2"/>
+			<node id="3"/>
+			<node id="4"/>
+			<node id="5"/>
+			<node id="6"/>
+			<node id="7"/>
+			<node id="8"/>
+			<node id="9"/>
+			<node id="10"/>
+			<node id="11"/>
+			<node id="12"/>
+			<node id="13"/>
+			<node id="14"/>
+			<node id="15"/>
+			<node id="16"/>
+			<node id="17"/>
+			<node id="18"/>
+			<node id="19"/>
+			<node id="20"/>
+			<node id="21"/>
+			<node id="22"/>
+			<node id="23"/>
+			<node id="24"/>
+			<node id="25"/>
+			<node id="26"/>
+			<node id="27"/>
+			<node id="28"/>
+			<node id="29"/>
+			<node id="30"/>
+			<node id="31"/>
+			<node id="32"/>
+			<node id="33"/>
+			<node id="34"/>
+			<node id="35"/>
+			<node id="36"/>
+			<node id="37"/>
+			<node id="38"/>
+			<node id="39"/>
+			<node id="40"/>
+			<node id="41"/>
+			<node id="42"/>
+			<node id="43"/>
+			<node id="44"/>
+			<node id="45"/>
+			<node id="46"/>
+			<node id="47"/>
+			<node id="48"/>
+			<node id="49"/>
+			<node id="50"/>
+			<node id="51"/>
+			<node id="52"/>
+			<node id="53"/>
+			<node id="54"/>
+			<node id="55"/>
+			<node id="56"/>
+			<node id="57"/>
+			<node id="58"/>
+			<node id="59"/>
+			<node id="60"/>
+			<node id="61"/>
+			<node id="62"/>
+			<node id="63"/>
+			<node id="64"/>
+		</NodeSet>
+	</Geometry>
+	<Boundary>
+	  <prescribe bc="c5" node_set="PlateN">
+	    <value>5.675e-10</value>
+	    <scale>1</scale>
+	  </prescribe>
+	</Boundary>
+	<Control>
+    	  <time_steps>3000000</time_steps>
+	  <step_size>0.1</step_size>
+	  <max_refs>5</max_refs>
+	  <max_ups>10</max_ups>
+	  <Rtol>0</Rtol>
+	  <Ctol>0</Ctol>
+	  <time_stepper>
+	    <dtmin>0.001</dtmin>
+	    <dtmax>10000</dtmax>
+	    <max_retries>10</max_retries>
+	    <opt_iter>15</opt_iter>
+	  </time_stepper>
+	  <force_positive_concentrations>1</force_positive_concentrations>
+	</Control>	
+	<Output>
+	  <plotfile type="febio">
+	    <var type="effective concentration['c1']=[D1]"/>	    
+	    <var type="effective concentration['c2']=[N1]"/>  
+	    <var type="effective concentration['c3']=[D1N1]"/>	    
+	    <var type="effective concentration['c4']=[S]"/>  
+	    <var type="effective concentration['c5']=[DP]"/>	    
+	    <var type="effective concentration['c6']=[DPN1]"/>  
+	  </plotfile>
+	</Output>
+</febio_spec>
